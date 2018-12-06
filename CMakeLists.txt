@@ -37,14 +37,12 @@ include_directories (${CMAKE_SOURCE_DIR}/lib/glfw-3.2.1/include)
 
 # Sources #-----------------------------------------------------------------------------------------
 set ( HEADERS_FILES
-
+  include/shader.hpp
 )
 
 set ( SOURCES_FILES
-
+  src/shader.cpp
 )
-
-include_directories ( ${CMAKE_SOURCE_DIR}/src )
 
 # Executables #-------------------------------------------------------------------------------------
 add_executable ( ${CMAKE_PROJECT_NAME}_exe
