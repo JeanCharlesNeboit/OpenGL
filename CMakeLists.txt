@@ -29,11 +29,13 @@ endif ()
 message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 
 # Libraries #---------------------------------------------------------------------------------------
-add_subdirectory (${CMAKE_SOURCE_DIR}/lib/glfw-3.2.1)
+add_subdirectory (${CMAKE_SOURCE_DIR}/lib/glfw)
+add_subdirectory (${CMAKE_SOURCE_DIR}/lib/assimp)
 
 # Includes #----------------------------------------------------------------------------------------
 include_directories (${CMAKE_SOURCE_DIR}/include)
-include_directories (${CMAKE_SOURCE_DIR}/lib/glfw-3.2.1/include)
+include_directories (${CMAKE_SOURCE_DIR}/lib/glfw/include)
+include_directories (${CMAKE_SOURCE_DIR}/lib/assimp/include)
 
 # Sources #-----------------------------------------------------------------------------------------
 set ( HEADERS_FILES
@@ -54,4 +56,4 @@ add_executable ( ${CMAKE_PROJECT_NAME}_exe
 
 # Build #-------------------------------------------------------------------------------------------
 set_target_properties ( ${CMAKE_PROJECT_NAME}_exe PROPERTIES LINKER_LANGUAGE C )
-target_link_libraries ( ${CMAKE_PROJECT_NAME}_exe glfw ${OPENGL_glu_LIBRARY} ${GLFW_LIBRARIES} )
+target_link_libraries ( ${CMAKE_PROJECT_NAME}_exe glfw assimp::assimp ${OPENGL_glu_LIBRARY} ${GLFW_LIBRARIES} )
