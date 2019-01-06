@@ -6,8 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
-#include <filesystem>
 
+#include "filesystem.hpp"
 #include "shader.hpp"
 #include "model.hpp"
 #include "camera.hpp"
@@ -54,11 +54,11 @@ int main()
   }
   glfwMakeContextCurrent(window);
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-  glfwSetCursorPosCallback(window, mouse_callback);
-  glfwSetScrollCallback(window, scroll_callback);
+  //glfwSetCursorPosCallback(window, mouse_callback);
+  //glfwSetScrollCallback(window, scroll_callback);
 
   // tell GLFW to capture our mouse
-  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
   {
@@ -66,7 +66,7 @@ int main()
     return -1;
   }
 
-  /*Shader ourShader("../shaders/vertex/triangle.vert", "../shaders/fragment/triangle.frag");
+  Shader ourShader("../shaders/vertex/triangle.vert", "../shaders/fragment/triangle.frag");
 
   float vertices[] = {
     // positions         // colors
@@ -93,7 +93,7 @@ int main()
   glEnableVertexAttribArray(0);
   // color attribute
   glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-  glEnableVertexAttribArray(1);*/
+  glEnableVertexAttribArray(1);
 
   // configure global opengl state
   // -----------------------------
@@ -101,11 +101,11 @@ int main()
 
   // build and compile shaders
   // -------------------------
-  Shader ourShader("../shader/vertex/modelLoading.vert", "../shader/fragment/modelLoading.frag");
+  //Shader ourShader("../shaders/vertex/modelLoading.vert", "../shaders/fragment/modelLoading.frag");
 
   // load models
   // -----------
-  Model ourModel(std::filesystem::path("~/Download/nanosuit/nanosuit.obj"));
+  Model ourModel("../resources/objects/nanosuit/nanosuit.obj");
 
   while(!glfwWindowShouldClose(window))
   {
@@ -121,7 +121,7 @@ int main()
     ourShader.use();
 
     // view/projection transformations
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera.getZoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
     glm::mat4 view = camera.GetViewMatrix();
     ourShader.setMat4("projection", projection);
     ourShader.setMat4("view", view);
@@ -129,12 +129,12 @@ int main()
     // render the loaded model
     glm::mat4 model;
     model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
-    model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+    model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
     ourShader.setMat4("model", model);
-    ourModel.Draw(ourShader);
+    ourModel.draw(ourShader);
 
-    /*glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);*/
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

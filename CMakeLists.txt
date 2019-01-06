@@ -31,7 +31,8 @@ find_package ( X11 REQUIRED )
 
 #message ( STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}" )
 
-set ( CMAKE_CXX_STANDARD 17 )
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_REQUIRED_FLAGS -std=c++17)
 
 # Libraries #---------------------------------------------------------------------------------------
 add_subdirectory (${CMAKE_SOURCE_DIR}/lib/glfw)
@@ -39,6 +40,9 @@ add_subdirectory (${CMAKE_SOURCE_DIR}/lib/assimp)
 add_subdirectory (${CMAKE_SOURCE_DIR}/lib/glm)
 
 # Includes #----------------------------------------------------------------------------------------
+configure_file(configuration/root_directory.h.in configuration/root_directory.h)
+include_directories(${CMAKE_BINARY_DIR}/configuration)
+
 include_directories (${CMAKE_SOURCE_DIR}/include)
 include_directories (${CMAKE_SOURCE_DIR}/lib/glfw/include)
 include_directories (${CMAKE_SOURCE_DIR}/lib/assimp/include)
@@ -53,6 +57,8 @@ set ( HEADERS_FILES
   include/model.hpp
   include/stb/stb_image.h
   include/camera.hpp
+  include/filesystem.hpp
+  configuration/root_directory.h
 )
 
 set ( SOURCES_FILES
