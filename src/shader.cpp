@@ -1,5 +1,9 @@
 #include "shader.hpp"
 
+Shader::Shader() {
+  
+}
+
 Shader::Shader(const GLchar* vertexPath, const GLchar* framentPath) {
   std::string vertexCode;
   std::string fragmentCode;

@@ -12,6 +12,7 @@ class Shader {
 private:
   unsigned int ID;
 public:
+  Shader();
   Shader(const GLchar* vertexPath, const GLchar* framentPath);
   void use();
   void setBool(const std::string & name, bool value) const;

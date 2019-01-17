@@ -41,6 +41,9 @@ public:
   void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
   void ProcessMouseScroll(float yoffset);
   float getZoom() { return Zoom; }
+  glm::vec3 getPosition() { return Position; }
+  glm::vec3 getFront() { return Front; }
+  glm::vec3 getUp() { return Up; }
 };
 
 #endif

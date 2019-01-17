@@ -67,6 +67,7 @@ set ( SOURCES_FILES
   src/model.cpp
   src/stb/stb_image.cpp
   src/camera.cpp
+  src/scene/mainscene.cpp
 )
 
 # Executables #-------------------------------------------------------------------------------------
