@@ -40,13 +40,14 @@ add_subdirectory (${CMAKE_SOURCE_DIR}/lib/assimp)
 add_subdirectory (${CMAKE_SOURCE_DIR}/lib/glm)
 
 # Includes #----------------------------------------------------------------------------------------
-configure_file(configuration/root_directory.h.in configuration/root_directory.h)
+configure_file(configuration/root_directory.h.in configuration/root_directory.h @ONLY)
 include_directories(${CMAKE_BINARY_DIR}/configuration)
 
 include_directories (${CMAKE_SOURCE_DIR}/include)
 include_directories (${CMAKE_SOURCE_DIR}/lib/glfw/include)
 include_directories (${CMAKE_SOURCE_DIR}/lib/assimp/include)
 include_directories (${CMAKE_SOURCE_DIR}/lib/glm/glm)
+include_directories (${CMAKE_SOURCE_DIR}/resources/objects)
 
 # Sources #-----------------------------------------------------------------------------------------
 set ( HEADERS_FILES
@@ -59,6 +60,7 @@ set ( HEADERS_FILES
   include/camera.hpp
   include/filesystem.hpp
   configuration/root_directory.h
+  resources/objects/cubes_resources.hpp
 )
 
 set ( SOURCES_FILES
@@ -67,6 +69,7 @@ set ( SOURCES_FILES
   src/model.cpp
   src/stb/stb_image.cpp
   src/camera.cpp
+  src/texture.cpp
   src/scene/mainscene.cpp
 )
 

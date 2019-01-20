@@ -9,16 +9,25 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-MainScene::MainScene() : camera(glm::vec3(0.0f, 0.0f, 3.0f)), ourShader("../shaders/fragment/camera.frag", "../shaders/vertex/camera.vert") {
+#include <math.h>
+
+#include "cubes_resources.hpp"
+
+MainScene::MainScene() :
+  camera(glm::vec3(0.0f, 0.0f, 3.0f)),
+  cubeShader("../shaders/vertex/cube.vert", "../shaders/fragment/cube.frag"),
+  modelShader("../shaders/vertex/model.vert", "../shaders/fragment/model.frag"),
+  model("../resources/objects/nanosuit/nanosuit.obj")
+{
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
-  glGenVertexArrays(1, &VAO);
-  glGenBuffers(1, &VBO);
+  glGenVertexArrays(1, &cubeVAO);
+  glGenBuffers(1, &cubeVBO);
 
-  glBindVertexArray(VAO);
+  glBindVertexArray(cubeVAO);
 
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
 
   // position attribute
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
@@ -79,14 +88,14 @@ MainScene::MainScene() : camera(glm::vec3(0.0f, 0.0f, 3.0f)), ourShader("../shad
 
   // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
   // -------------------------------------------------------------------------------------------
-  ourShader.use();
-  ourShader.setInt("texture1", 0);
-  ourShader.setInt("texture2", 1);
+  cubeShader.use();
+  cubeShader.setInt("texture1", 0);
+  cubeShader.setInt("texture2", 1);
 }
 
 MainScene::~MainScene() {
-  glDeleteVertexArrays(1, &VAO);
-  glDeleteBuffers(1, &VBO);
+  glDeleteVertexArrays(1, &cubeVAO);
+  glDeleteBuffers(1, &cubeVBO);
 }
 
 void MainScene::display(GLFWwindow *window, unsigned int SCR_WIDTH, unsigned int SCR_HEIGHT, float deltaTime) {
@@ -105,19 +114,17 @@ void MainScene::display(GLFWwindow *window, unsigned int SCR_WIDTH, unsigned int
   glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, texture2);
 
-  // activate shader
-  ourShader.use();
-
-  // pass projection matrix to shader (note that in this case it could change every frame)
+  // view/projection transformations
   glm::mat4 projection = glm::perspective(glm::radians(camera.getZoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-  ourShader.setMat4("projection", projection);
-
-  // camera/view transformation
   glm::mat4 view = camera.GetViewMatrix();
-  ourShader.setMat4("view", view);
+
+  // activate shader
+  cubeShader.use();
+  cubeShader.setMat4("projection", projection);
+  cubeShader.setMat4("view", view);
 
   // render boxes
-  glBindVertexArray(VAO);
+  glBindVertexArray(cubeVAO);
   for (unsigned int i = 0; i < 10; i++)
   {
       // calculate the model matrix for each object and pass it to shader before drawing
@@ -125,10 +132,23 @@ void MainScene::display(GLFWwindow *window, unsigned int SCR_WIDTH, unsigned int
       model = glm::translate(model, cubePositions[i]);
       float angle = 20.0f * i;
       model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-      ourShader.setMat4("model", model);
+      cubeShader.setMat4("model", model);
 
       glDrawArrays(GL_TRIANGLES, 0, 36);
   }
+
+  // activate shader
+  modelShader.use();
+  modelShader.setMat4("projection", projection);
+  modelShader.setMat4("view", view);
+
+  // render the loaded model
+  glm::mat4 _model = glm::mat4(1.0f);
+  _model = glm::translate(_model, glm::vec3(-4.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+  _model = glm::scale(_model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
+  //_model = glm::rotate(_model, glm::radians(180.0f), glm::vec3(1, 1, 1));
+  modelShader.setMat4("model", _model);
+  model.draw(modelShader);
 
   // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
   // -------------------------------------------------------------------------------
@@ -158,7 +178,7 @@ void MainScene::scroll_callback(GLFWwindow *window, double xoffset, double yoffs
 }
 
 void MainScene::processInput(GLFWwindow *window, float deltaTime) {
-  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
@@ -169,4 +189,8 @@ void MainScene::processInput(GLFWwindow *window, float deltaTime) {
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        camera.ProcessKeyboard(UP, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        camera.ProcessKeyboard(DOWN, deltaTime);
 }

@@ -25,6 +25,4 @@ public:
   void draw(Shader);
 };
 
-unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
-
 #endif

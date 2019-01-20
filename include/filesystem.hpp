@@ -16,7 +16,6 @@ public:
     return (*pathBuilder)(path);
   }
 
-private:
   static std::string const & getRoot()
   {
     static char const * envRoot = getenv("LOGL_ROOT_PATH");
@@ -25,6 +24,7 @@ private:
     return root;
   }
 
+private:
   //static std::string(*foo (std::string const &)) getPathBuilder()
   static Builder getPathBuilder()
   {

@@ -1,7 +1,11 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
+#include <iostream>
 #include <string>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <stb/stb_image.h>
 
 struct Texture {
 public:
@@ -24,6 +28,8 @@ public:
       break;
     }
   }
+
+  static unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
 };
 
 #endif
