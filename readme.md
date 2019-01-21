@@ -36,3 +36,23 @@ make
 ```c++
 ./OpenGL_exe
 ```
+
+## Commands
+
+#### Keyboard controls 
+
+``` text
+Z -> go forward
+S -> go backward
+Q -> go left
+D -> go right
+↑ -> go up
+↓ -> go down 
+```
+
+#### Mouse controls
+
+``` text
+scroll -> Zoom in/ out
+moove -> horizontal and vertical movement 
+```
