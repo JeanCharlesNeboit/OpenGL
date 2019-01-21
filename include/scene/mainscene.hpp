@@ -36,6 +36,9 @@ private:
   // textures
   unsigned int texture1, texture2;
 
+  // lights
+  glm::vec3 ambientLightColor;
+
 public:
   MainScene();
   ~MainScene();

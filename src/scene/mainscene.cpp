@@ -17,7 +17,8 @@ MainScene::MainScene() :
   camera(glm::vec3(0.0f, 0.0f, 3.0f)),
   cubeShader("../shaders/vertex/cube.vert", "../shaders/fragment/cube.frag"),
   modelShader("../shaders/vertex/model.vert", "../shaders/fragment/model.frag"),
-  model("../resources/objects/nanosuit/nanosuit.obj")
+  model("../resources/objects/nanosuit/nanosuit.obj"),
+  ambientLightColor(1.0f)
 {
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
@@ -105,7 +106,7 @@ void MainScene::display(GLFWwindow *window, unsigned int SCR_WIDTH, unsigned int
 
   // render
   // ------
-  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+  //glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // bind textures on corresponding texture units
@@ -122,6 +123,7 @@ void MainScene::display(GLFWwindow *window, unsigned int SCR_WIDTH, unsigned int
   cubeShader.use();
   cubeShader.setMat4("projection", projection);
   cubeShader.setMat4("view", view);
+  cubeShader.setVec3("lightColor", ambientLightColor);
 
   // render boxes
   glBindVertexArray(cubeVAO);
@@ -146,7 +148,6 @@ void MainScene::display(GLFWwindow *window, unsigned int SCR_WIDTH, unsigned int
   glm::mat4 _model = glm::mat4(1.0f);
   _model = glm::translate(_model, glm::vec3(-4.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
   _model = glm::scale(_model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
-  //_model = glm::rotate(_model, glm::radians(180.0f), glm::vec3(1, 1, 1));
   modelShader.setMat4("model", _model);
   model.draw(modelShader);
 
@@ -193,4 +194,12 @@ void MainScene::processInput(GLFWwindow *window, float deltaTime) {
         camera.ProcessKeyboard(UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
         camera.ProcessKeyboard(DOWN, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+        if(glm::all(glm::greaterThan(ambientLightColor, glm::vec3(1.0f))))
+            ambientLightColor -= glm::vec3(0.1f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+        if(glm::all(glm::lessThan(ambientLightColor, glm::vec3(10.0f))))
+            ambientLightColor += glm::vec3(0.1f);
+    }
 }
